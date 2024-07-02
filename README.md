@@ -1,2 +1,2 @@
 # Events-Project-
-This is my first project on gitHub.
+#About my first project on GitHub.
