@@ -1,0 +1,70 @@
+using System;
+
+
+namespace ConsoleApp1
+{
+    public class ProcessEventArgs : EventArgs
+    {
+        public int ProcessId { get; set; }
+        public string Name { get; set; }
+    }
+
+    class Publisher
+    {
+        public event EventHandler<ProcessEventArgs> ProcessCompleted;
+
+        public void StartProcess(int processId, string name)
+        {
+            Console.WriteLine("Process Completed");
+            OnProcessCompleted(new ProcessEventArgs { ProcessId = processId, Name = name });
+        }
+
+        protected virtual void OnProcessCompleted(ProcessEventArgs e)
+        {
+            ProcessCompleted?.Invoke(this, e);
+        }
+    }
+
+    class Subscriber
+    {
+        public void ProcessEventHandler(object sender, ProcessEventArgs e)
+        {
+            Console.WriteLine($"Process {e.ProcessId} Completed");
+        }
+
+        public void AnotherSub(object sender, ProcessEventArgs e)
+        {
+            Console.WriteLine($"Another process {e.ProcessId} Completed successfully");
+        }
+    }
+
+    /*class Sub2
+    {
+        public void AnotherSub(object sender, ProcessEventArgs e)
+        {
+            Console.WriteLine($"Another process {e.ProcessId} Completed successfully");
+        }
+    }*/
+    
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Publisher pub = new Publisher();
+            Subscriber sub = new Subscriber();
+
+            pub.ProcessCompleted += sub.ProcessEventHandler;
+            
+
+            pub.StartProcess(124, "Joe");
+
+            pub.ProcessCompleted += sub.AnotherSub;
+
+            pub.StartProcess(12244, "Biden");
+            Console.ReadLine();
+        }
+
+        
+    }
+   
+}
